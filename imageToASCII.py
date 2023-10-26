@@ -11,12 +11,14 @@ def image_to_ascii(image_path, output_width):
     img = img.resize((output_width, output_height))
     img = img.convert('L')
     pixels = list(img.getdata())
+    
+    ascii_chars = "@%#*+=-:. "
+    
     normalized_pixels = [int((pixel / 255) * (len(ascii_chars) - 1)) for pixel in pixels]
 
-    grayscale_chars = [ascii_chars[pixel] for pixel in normalized_pixels]
-    ascii_image = [grayscale_chars[index: index + output_width] for index in range(0, len(grayscale_chars), output_width)]
+    ascii_image = [ascii_chars[pixel] for pixel in normalized_pixels]
+    ascii_image = [ascii_image[index: index + output_width] for index in range(0, len(ascii_image), output_width)]
     return "\n".join(["".join(row) for row in ascii_image])
-
 
 def select_image():
     file_path = filedialog.askopenfilename(title="Select an image", filetypes=[("Image files", "*.png;*.jpg;*.jpeg;*.bmp;*.tif")])
@@ -71,8 +73,8 @@ ascii_output_frame.pack(pady=20)
 scrollbar = tk.Scrollbar(ascii_output_frame)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-small_font = font.Font(size=8)
-ascii_output = tk.Text(ascii_output_frame, wrap=tk.WORD, width=100, height=30, font=small_font, yscrollcommand=scrollbar.set)
+large_font = font.Font(size=12)
+ascii_output = tk.Text(ascii_output_frame, wrap=tk.WORD, width=100, height=30, font=large_font, yscrollcommand=scrollbar.set)
 ascii_output.pack(pady=20)
 
 scrollbar.config(command=ascii_output.yview)
