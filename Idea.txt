@@ -1,0 +1,54 @@
+1. image_to_ascii function:
+This function is responsible for converting an image to its ASCII representation.
+
+a. ASCII Characters Selection:
+ascii_chars = "@%#*+=-:. "
+We define a list of ASCII characters in decreasing order of "density" or "darkness". The idea is that each character will correspond to a particular shade of gray in the image, with "@" being very dark and " " (a space) being very light.
+
+b. Image Processing:
+img = Image.open(image_path)
+width, height = img.size
+aspect_ratio = height / float(width)
+output_height = int(output_width * aspect_ratio)
+img = img.resize((output_width, output_height))
+img = img.convert('L')
+
+Here, we:
+Open the image.
+Get its width and height to compute the aspect ratio.
+Compute the output_height based on the given output_width while maintaining the original aspect ratio.
+Resize the image to the computed width and height.
+Convert the image to grayscale ('L' mode) since we're only interested in shades of gray for ASCII representation.
+
+c. Pixel to ASCII Mapping:
+pixels = list(img.getdata())
+grayscale_chars = [ascii_chars[pixel // 25] for pixel in pixels]
+ascii_image = [grayscale_chars[index: index + output_width] for index in range(0, len(grayscale_chars), output_width)]
+We extract all pixel values into the pixels list.
+Map each pixel value (which is now a grayscale value between 0 and 255) to an ASCII character. We use integer division by 25 to map the 256 grayscale values to one of the 10 ASCII characters in our list.
+Construct rows of ASCII characters, each of length output_width, to build the final ASCII representation.
+
+2. GUI functions:
+The GUI is created using the tkinter library.
+
+a. select_image function:
+This function lets the user select an image file and sets the default width for ASCII conversion based on the image's aspect ratio.
+
+b. save_ascii_to_file function:
+This function saves the generated ASCII art to a text file chosen by the user.
+
+c. generate_ascii function:
+Generates the ASCII representation of the selected image based on the width specified in the GUI.
+
+3. GUI Layout:
+The GUI consists of:
+
+A button to select the image.
+An entry field to specify the width for the ASCII output.
+A button to generate the ASCII representation.
+A Text widget to display the ASCII output.
+A button to save the ASCII output to a file.
+Additionally, there's a Scrollbar added to the Text widget to allow scrolling if the ASCII output is longer than the visible area.
+
+Logic Summary:
+The logic behind the conversion is to map grayscale pixel values (0 being black and 255 being white) to specific ASCII characters. Darker grayscale values get mapped to "denser" characters, and lighter values get mapped to "lighter" characters. This gives an effect where the patterns of dark and light in the original image are represented by patterns of dense and light characters in the ASCII representation.
