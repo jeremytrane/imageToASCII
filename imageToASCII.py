@@ -11,9 +11,12 @@ def image_to_ascii(image_path, output_width):
     img = img.resize((output_width, output_height))
     img = img.convert('L')
     pixels = list(img.getdata())
-    grayscale_chars = [ascii_chars[pixel // 25] for pixel in pixels]
+    normalized_pixels = [int((pixel / 255) * (len(ascii_chars) - 1)) for pixel in pixels]
+
+    grayscale_chars = [ascii_chars[pixel] for pixel in normalized_pixels]
     ascii_image = [grayscale_chars[index: index + output_width] for index in range(0, len(grayscale_chars), output_width)]
     return "\n".join(["".join(row) for row in ascii_image])
+
 
 def select_image():
     file_path = filedialog.askopenfilename(title="Select an image", filetypes=[("Image files", "*.png;*.jpg;*.jpeg;*.bmp;*.tif")])
